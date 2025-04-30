@@ -35,28 +35,33 @@ class Intencion(Enum):
 
 class AdaptadorWhatsAppSimulado(IAdaptadorCanal):
     def enviar_mensaje(self, destinatario: str, contenido: str):
-        print(f"Adaptador: Enviando respuesta a [{destinatario}]")
+        print(f" - Enviando respuesta a [{destinatario}]")
 
 class ServicioCognitivoSimulado(IServicioCognitivo):
     def obtener_respuesta(self, entrada_usuario: str, contexto_negocio: str) -> str:
-        print(f"    [IA] Procesando: '{entrada_usuario}' (Contexto: {contexto_negocio})")
-        return f"respuesta_IA({contexto_negocio})" # Respuesta simulada simple
+        print(f" - Generando respuesta con: {contexto_negocio}")
+        return f"respuesta"
 
 class FuenteDeDatosNegocio:
     def obtener_contexto(self, intencion: Intencion) -> str:
-        if intencion == Intencion.CONSULTA_PRODUCTO: return "Contexto_Producto"
-        if intencion == Intencion.RESERVA: return "Contexto_Reserva"
+        if intencion == Intencion.CONSULTA_PRODUCTO: return "Contexto_Productos"
+        if intencion == Intencion.RESERVA: return "Contexto_Reservas"
         return "Contexto_General"
 
-# SRP: Determina intención (simulado)
+    
 class SelectorDeIntencion:
     def determinar_intencion(self, texto_mensaje: str) -> Intencion:
-        print(f" - Analizando intencion de: '{texto_mensaje}'")
+        print(f" - Analizando intencion del mensaje: '{texto_mensaje}'")
         texto_lower = texto_mensaje.lower()
-        if "producto" in texto_lower or "precio" in texto_lower: return Intencion.CONSULTA_PRODUCTO
-        if "reservar" in texto_lower or "cita" in texto_lower: return Intencion.RESERVA
-        if "hola" in texto_lower: return Intencion.SALUDO
-        return Intencion.DESCONOCIDA
+        intencion_detectada = Intencion.DESCONOCIDA
+        if "precio" in texto_lower:
+            intencion_detectada = Intencion.CONSULTA_PRODUCTO
+        elif "reservar" in texto_lower:
+            intencion_detectada = Intencion.RESERVA
+        elif "hola" in texto_lower:
+            intencion_detectada = Intencion.SALUDO
+        print(f" - Intención Detectada: {intencion_detectada.name}")
+        return intencion_detectada
 
 # --- Manejadores Específicos (Implementan IManejadorDeAccion - LSP, SRP, OCP) ---
 
@@ -65,7 +70,6 @@ class ManejadorConsultasProducto(IManejadorDeAccion):
         self._servicio_ia = servicio_ia
         self._datos_negocio = datos_negocio
     def procesar(self, mensaje: Mensaje) -> str:
-        print(f"  -> Manejador: {self.__class__.__name__}")
         contexto = self._datos_negocio.obtener_contexto(Intencion.CONSULTA_PRODUCTO)
         resp_ia = self._servicio_ia.obtener_respuesta(mensaje.contenido, contexto)
         return f"Resp_Producto({resp_ia})"
@@ -75,14 +79,12 @@ class ManejadorReservas(IManejadorDeAccion):
         self._servicio_ia = servicio_ia
         self._datos_negocio = datos_negocio
     def procesar(self, mensaje: Mensaje) -> str:
-        print(f"  -> Manejador: {self.__class__.__name__}")
         contexto = self._datos_negocio.obtener_contexto(Intencion.RESERVA)
         resp_ia = self._servicio_ia.obtener_respuesta(mensaje.contenido, contexto)
         return f"Resp_Reserva({resp_ia})"
 
 class ManejadorSaludo(IManejadorDeAccion):
     def procesar(self, mensaje: Mensaje) -> str:
-        print(f"  -> Manejador: {self.__class__.__name__}")
         return "Resp_Saludo(¡Hola!)"
 
 class ManejadorDesconocido(IManejadorDeAccion):
@@ -103,14 +105,11 @@ class CoordinadorPrincipal:
         self._manejadores = manejadores
 
     def procesar_mensaje_entrante(self, mensaje: Mensaje):
-        print(f"\nNUEVO MENSAJE: {mensaje.remitente}")
+        print(f"\nNuevo mensaje: {mensaje.remitente}")
         intencion = self._selector.determinar_intencion(mensaje.contenido)
-        print(f" - Intención detectada: {intencion.name}")
         manejador = self._manejadores.get(intencion, self._manejadores.get(Intencion.DESCONOCIDA))
         print(f" - Delegando a: {type(manejador).__name__}")
-        respuesta = manejador.procesar(mensaje)
-    
-        print(f"  [Coordinador] Respuesta final: '{respuesta}'")
+        respuesta = manejador.procesar(mensaje)    
         self._adaptador_canal.enviar_mensaje(mensaje.remitente, respuesta)
 
 # --- 5. PUNTO DE ENTRADA (Ensamblaje y Simulación) ---
@@ -143,8 +142,7 @@ if __name__ == "__main__":
     print("\n--- Iniciando Simulación ---")
     # 5. Simular mensajes
     coordinador.procesar_mensaje_entrante(Mensaje("User1", "Hola"))
-    coordinador.procesar_mensaje_entrante(Mensaje("User2", "Precio producto X?"))
-    coordinador.procesar_mensaje_entrante(Mensaje("User3", "Quiero reservar"))
-    coordinador.procesar_mensaje_entrante(Mensaje("User1", "Gracias")) # Desconocida
+    coordinador.procesar_mensaje_entrante(Mensaje("User2", "Precio del producto A ?"))
+    coordinador.procesar_mensaje_entrante(Mensaje("User3", "Quiero una reserva"))
 
     print("\n--- Simulación Finalizada ---")
