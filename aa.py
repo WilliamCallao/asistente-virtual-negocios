@@ -1,10 +1,22 @@
+
+
 import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, Optional
 
-# --- 1. ABSTRACCIONES
+
+
+"""
+# PRINCIPIO DE SEGREGACIÓN DE INTERFACES
+# Las interfaces IAdaptadorRedSocial, IModeloIA e IManejadorDeAccion están definidas
+# con métodos específicos y enfocados. Cada interfaz tiene una responsabilidad clara
+# y los clientes solo dependen de los métodos que realmente necesitan.
+# Esto evita que las clases que implementan estas interfaces dependan de métodos
+# que no utilizan.
+"""
+
 
 class IAdaptadorRedSocial(ABC):
     @abstractmethod
@@ -29,11 +41,18 @@ class Intencion(Enum):
     SALUDO = auto()
     DESCONOCIDA = auto()
 
-# --- 2. IMPLEMENTACIONES CONCRETAS ---
 
 class AdaptadorWhatsApp(IAdaptadorRedSocial):
     def enviar_mensaje(self, destinatario: str, contenido: str):
         print(f" - Enviando respuesta a [{destinatario}]")
+
+"""
+# PRINCIPIO DE RESPONSABILIDAD ÚNICA
+# La clase ServicioOpenIA tiene una única responsabilidad: obtener respuestas
+# de un modelo de IA. No se encarga de determinar intenciones, manejar la lógica 
+# de negocio o enviar mensajes.
+"""
+
 
 class ServicioOpenIA(IModeloIA):
     def obtener_respuesta(self, entrada_usuario: str, contexto_negocio: str) -> str:
@@ -60,7 +79,14 @@ class SelectorDeIntencion:
         print(f" - Intención Detectada: {intencion_detectada.name}")
         return intencion_detectada
 
-# --- 3. MANEJADORES
+
+"""
+# PRINCIPIO ABIERTO/CERRADO
+# El sistema de manejadores permite añadir nuevos manejadores para nuevas intenciones
+# sin modificar el código existente. Simplemente se crea una nueva clase que
+# implemente IManejadorDeAccion y se registra en el mapa de manejadores.
+"""
+
 
 class ManejadorConsultasProducto(IManejadorDeAccion):
     def __init__(self, servicio_ia: IModeloIA, datos_negocio: FuenteDeDatosNegocio):
@@ -88,22 +114,22 @@ class ManejadorDesconocido(IManejadorDeAccion):
         contexto = self._datos_negocio.obtener_contexto(Intencion.DESCONOCIDA)
         resp_ia = self._servicio_ia.obtener_respuesta(mensaje.contenido, contexto)
         return f"Respuesta_Desconocida({resp_ia})"
+ 
+"""
+# PRINCIPIO DE INVERSIÓN DE DEPENDENCIAS
+# La clase CoordinadorPrincipal depende de abstracciones y no de implementaciones concretas
+# Recibe un SelectorDeIntencion, un IAdaptadorRedSocial y un diccionario
+# de manejadores que implementan IManejadorDeAccion. 
+# Esto permite cambiar fácilmente las implementaciones sin modificar el coordinador. Los 
+# módulos de alto nivel no dependen de los módulos de bajo nivel
+"""
 
-"""
-# PRINCIPIO DE INVERSIÓN DE DEPENDENCIAS (D)
-# La clase CoordinadorPrincipal depende de abstracciones (interfaces) y no de implementaciones concretas.
-# Recibe por inyección de dependencias un SelectorDeIntencion, un IAdaptadorRedSocial y un diccionario
-# de manejadores que implementan IManejadorDeAccion. Esto permite cambiar fácilmente las implementaciones
-# sin modificar el coordinador. Los módulos de alto nivel no dependen de los módulos de bajo nivel,
-# ambos dependen de abstracciones.
-"""
 
 class CoordinadorPrincipal:
     def __init__(self, selector: SelectorDeIntencion, adaptador_canal: IAdaptadorRedSocial, manejadores: Dict[Intencion, IManejadorDeAccion]):
         self._selector = selector
         self._adaptador_canal = adaptador_canal
         self._manejadores = manejadores
-
 
     """
     # PRINCIPIO DE SUSTITUCIÓN DE LISKOV (L)
@@ -121,7 +147,8 @@ class CoordinadorPrincipal:
         respuesta = manejador.procesar(mensaje)    
         self._adaptador_canal.enviar_mensaje(mensaje.remitente, respuesta)
 
-# --- 5. EJEMPLO
+
+# —-------------------------
 
 if __name__ == "__main__":
     adaptador = AdaptadorWhatsApp()
@@ -141,7 +168,10 @@ if __name__ == "__main__":
 
     coordinador = CoordinadorPrincipal(selector, adaptador, mapa_manejadores)
 
-
     coordinador.procesar_mensaje_entrante(Mensaje("User1", "Hola"))
     coordinador.procesar_mensaje_entrante(Mensaje("User2", "Precio del producto A ?"))
     coordinador.procesar_mensaje_entrante(Mensaje("User3", "Quiero una reserva"))
+
+
+
+
