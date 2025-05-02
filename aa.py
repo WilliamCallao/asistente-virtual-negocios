@@ -4,21 +4,19 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, Optional
 
-# --- 1. CONTRATOS
+# --- 1. ABSTRACCIONES
 
-class IAdaptadorCanal(ABC):
+class IAdaptadorRedSocial(ABC):
     @abstractmethod
     def enviar_mensaje(self, destinatario: str, contenido: str): pass
 
-class IServicioCognitivo(ABC):
+class IModeloIA(ABC):
     @abstractmethod
     def obtener_respuesta(self, entrada_usuario: str, contexto_negocio: str) -> str: pass
 
 class IManejadorDeAccion(ABC):
     @abstractmethod
     def procesar(self, mensaje: 'Mensaje') -> str: pass
-
-# --- 2. DATOS Y ENUMS ---
 
 @dataclass
 class Mensaje:
@@ -31,13 +29,13 @@ class Intencion(Enum):
     SALUDO = auto()
     DESCONOCIDA = auto()
 
-# --- 3. IMPLEMENTACIONES CONCRETAS ---
+# --- 2. IMPLEMENTACIONES CONCRETAS ---
 
-class AdaptadorWhatsAppSimulado(IAdaptadorCanal):
+class AdaptadorWhatsApp(IAdaptadorRedSocial):
     def enviar_mensaje(self, destinatario: str, contenido: str):
         print(f" - Enviando respuesta a [{destinatario}]")
 
-class ServicioCognitivoSimulado(IServicioCognitivo):
+class ServicioOpenIA(IModeloIA):
     def obtener_respuesta(self, entrada_usuario: str, contexto_negocio: str) -> str:
         print(f" - Generando respuesta con: {contexto_negocio}")
         return f"respuesta"
@@ -47,8 +45,7 @@ class FuenteDeDatosNegocio:
         if intencion == Intencion.CONSULTA_PRODUCTO: return "Contexto_Productos"
         if intencion == Intencion.RESERVA: return "Contexto_Reservas"
         return "Contexto_General"
-
-    
+ 
 class SelectorDeIntencion:
     def determinar_intencion(self, texto_mensaje: str) -> Intencion:
         print(f" - Analizando intencion del mensaje: '{texto_mensaje}'")
@@ -63,10 +60,10 @@ class SelectorDeIntencion:
         print(f" - Intención Detectada: {intencion_detectada.name}")
         return intencion_detectada
 
-# --- Manejadores Específicos (Implementan IManejadorDeAccion - LSP, SRP, OCP) ---
+# --- 3. MANEJADORES
 
 class ManejadorConsultasProducto(IManejadorDeAccion):
-    def __init__(self, servicio_ia: IServicioCognitivo, datos_negocio: FuenteDeDatosNegocio):
+    def __init__(self, servicio_ia: IModeloIA, datos_negocio: FuenteDeDatosNegocio):
         self._servicio_ia = servicio_ia
         self._datos_negocio = datos_negocio
     def procesar(self, mensaje: Mensaje) -> str:
@@ -75,7 +72,7 @@ class ManejadorConsultasProducto(IManejadorDeAccion):
         return f"Resp_Producto({resp_ia})"
 
 class ManejadorReservas(IManejadorDeAccion):
-    def __init__(self, servicio_ia: IServicioCognitivo, datos_negocio: FuenteDeDatosNegocio):
+    def __init__(self, servicio_ia: IModeloIA, datos_negocio: FuenteDeDatosNegocio):
         self._servicio_ia = servicio_ia
         self._datos_negocio = datos_negocio
     def procesar(self, mensaje: Mensaje) -> str:
@@ -88,7 +85,7 @@ class ManejadorSaludo(IManejadorDeAccion):
         return "Resp_Saludo(¡Hola!)"
 
 class ManejadorDesconocido(IManejadorDeAccion):
-    def __init__(self, servicio_ia: IServicioCognitivo, datos_negocio: FuenteDeDatosNegocio):
+    def __init__(self, servicio_ia: IModeloIA, datos_negocio: FuenteDeDatosNegocio):
         self._servicio_ia = servicio_ia
         self._datos_negocio = datos_negocio
     def procesar(self, mensaje: Mensaje) -> str:
@@ -96,10 +93,10 @@ class ManejadorDesconocido(IManejadorDeAccion):
         resp_ia = self._servicio_ia.obtener_respuesta(mensaje.contenido, contexto)
         return f"Resp_Desconocida({resp_ia})"
 
-# --- 4. COORDINADOR PRINCIPAL (Orquesta el flujo - SRP, DIP, OCP) ---
+# --- 4. COORDINADOR
 
 class CoordinadorPrincipal:
-    def __init__(self, selector: SelectorDeIntencion, adaptador_canal: IAdaptadorCanal, manejadores: Dict[Intencion, IManejadorDeAccion]):
+    def __init__(self, selector: SelectorDeIntencion, adaptador_canal: IAdaptadorRedSocial, manejadores: Dict[Intencion, IManejadorDeAccion]):
         self._selector = selector
         self._adaptador_canal = adaptador_canal
         self._manejadores = manejadores
@@ -112,23 +109,20 @@ class CoordinadorPrincipal:
         respuesta = manejador.procesar(mensaje)    
         self._adaptador_canal.enviar_mensaje(mensaje.remitente, respuesta)
 
-# --- 5. PUNTO DE ENTRADA (Ensamblaje y Simulación) ---
+# --- 5. EJEMPLO
 
 if __name__ == "__main__":
     print("--- Configurando Bot ---")
-    # 1. Crear componentes base
-    adaptador = AdaptadorWhatsAppSimulado()
+    adaptador = AdaptadorWhatsApp()
     datos_negocio = FuenteDeDatosNegocio()
-    servicio_ia = ServicioCognitivoSimulado()
+    servicio_ia = ServicioOpenIA()
     selector = SelectorDeIntencion()
 
-    # 2. Crear manejadores (inyectando dependencias)
     manejador_consulta = ManejadorConsultasProducto(servicio_ia, datos_negocio)
     manejador_reserva = ManejadorReservas(servicio_ia, datos_negocio)
     manejador_saludo = ManejadorSaludo()
     manejador_desconocido = ManejadorDesconocido(servicio_ia, datos_negocio)
 
-    # 3. Mapa de manejadores (Clave OCP)
     mapa_manejadores: Dict[Intencion, IManejadorDeAccion] = {
         Intencion.CONSULTA_PRODUCTO: manejador_consulta,
         Intencion.RESERVA: manejador_reserva,
@@ -136,11 +130,10 @@ if __name__ == "__main__":
         Intencion.DESCONOCIDA: manejador_desconocido
     }
 
-    # 4. Crear Coordinador (inyectando todo)
     coordinador = CoordinadorPrincipal(selector, adaptador, mapa_manejadores)
 
     print("\n--- Iniciando Simulación ---")
-    # 5. Simular mensajes
+
     coordinador.procesar_mensaje_entrante(Mensaje("User1", "Hola"))
     coordinador.procesar_mensaje_entrante(Mensaje("User2", "Precio del producto A ?"))
     coordinador.procesar_mensaje_entrante(Mensaje("User3", "Quiero una reserva"))
