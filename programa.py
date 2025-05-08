@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, Optional
 
-
-
 """
 # PRINCIPIO DE SEGREGACIÓN DE INTERFACES
 # Las interfaces IAdaptadorRedSocial, IModeloIA e IManejadorDeAccion están definidas
@@ -16,8 +14,7 @@ from typing import Dict, Optional
 # Esto evita que las clases que implementan estas interfaces dependan de métodos
 # que no utilizan.
 """
-
-
+   
 class IAdaptadorRedSocial(ABC):
     @abstractmethod
     def enviar_mensaje(self, destinatario: str, contenido: str): pass
@@ -52,7 +49,6 @@ class AdaptadorWhatsApp(IAdaptadorRedSocial):
 # de un modelo de IA. No se encarga de determinar intenciones, manejar la lógica 
 # de negocio o enviar mensajes.
 """
-
 
 class ServicioOpenIA(IModeloIA):
     def obtener_respuesta(self, entrada_usuario: str, contexto_negocio: str) -> str:
