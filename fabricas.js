@@ -1,5 +1,5 @@
 // fabricas.js
-const Intencion = require('./Intencion');
+const { Intencion } = require('./Intencion');
 const {
     EstrategiaConsultaProducto,
     EstrategiaReserva,

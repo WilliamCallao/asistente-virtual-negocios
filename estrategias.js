@@ -1,42 +1,40 @@
-// estrategias.js
-const Intencion = require('./Intencion');
+const { Intencion }  = require('./Intencion');
+
+// Clase base
 
 class EstrategiaDeProcesamiento {
-    constructor(cerebroIA, obtenerInformacionNegocio) {
-        if (this.constructor === EstrategiaDeProcesamiento) {
-            // Simulación de clase abstracta
-        }
-        this._cerebroIA = cerebroIA;
-        this._obtenerInformacionNegocio = obtenerInformacionNegocio;
+    constructor(modeloIA, negocio) {
+        this.modeloIA = modeloIA;
+        this.negocio = negocio;
     }
-
     procesar(mensaje) {
-        console.error("El método 'procesar' debe ser implementado por la estrategia concreta.");
-        return "Error: Estrategia no implementada correctamente.";
+        return "...";
     }
 }
 
+// Clases Especificas
+
 class EstrategiaConsultaProducto extends EstrategiaDeProcesamiento {
     procesar(mensaje) {
-        const pista = this._obtenerInformacionNegocio.obtenerInformacion(Intencion.PREGUNTAR_POR_PRODUCTO);
-        const respuestaIA = this._cerebroIA.generarRespuestaIA(mensaje.queDice, pista);
-        return `Respuesta sobre productos: (${respuestaIA})`;
+        const contexto = this.negocio.obtenerInformacion(Intencion.PRODUCTO);
+        const respuesta = this.modeloIA.generarRespuestaIA(mensaje.texto, contexto);
+        return respuesta;
     }
 }
 
 class EstrategiaReserva extends EstrategiaDeProcesamiento {
     procesar(mensaje) {
-        const pista = this._obtenerInformacionNegocio.obtenerInformacion(Intencion.HACER_RESERVA);
-        const respuestaIA = this._cerebroIA.generarRespuestaIA(mensaje.queDice, pista);
-        return `Respuesta sobre reservas: (${respuestaIA})`;
+        const contexto = this.negocio.obtenerInformacion(Intencion.RESERVA);
+        const respuesta = this.modeloIA.generarRespuestaIA(mensaje.texto, contexto);
+        return respuesta;
     }
 }
 
 class EstrategiaPorDefecto extends EstrategiaDeProcesamiento {
     procesar(mensaje) {
-        const pista = this._obtenerInformacionNegocio.obtenerInformacion(Intencion.NO_SE_ENTIENDE); // Contexto general
-        const respuestaIA = this._cerebroIA.generarRespuestaIA(mensaje.queDice, pista);
-        return `Respuesta general o de saludo: (${respuestaIA})`;
+        const contexto = this.negocio.obtenerInformacion(Intencion.DESCONOCIDO);
+        const respuesta = this.modeloIA.generarRespuestaIA(mensaje.texto, contexto);
+        return respuesta;
     }
 }
 

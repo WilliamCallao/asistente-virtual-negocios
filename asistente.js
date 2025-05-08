@@ -12,7 +12,7 @@ class AsistenteVirtual {
     }
 
     atenderNuevoMensaje(mensaje) {
-        console.log(`\nASISTENTE: Nuevo mensaje de: ${mensaje.remitente} - "${mensaje.texti}"`);
+        console.log(`\nASISTENTE: Nuevo mensaje de: ${mensaje.remitente} - "${mensaje.texto}"`);
 
         const intencionDetectada = this._detectorIntenciones.detectar(mensaje.texto);
 
