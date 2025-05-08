@@ -5,7 +5,7 @@ const EmisorWhatsapp = require('./EmisorWhatsapp');
 const ModeloIA = require('./ModeloIA');
 const Negocio = require('./Negocio');
 const DetectorDeIntenciones = require('./DetectorDeIntenciones');
-const { LoggingMotorIADecorator } = require('./decoradores');
+const { ModeloIAExtendido } = require('./ModeloIAExtendido');
 const { EstrategiaFactory } = require('./fabricas');
 const { AsistenteVirtual } = require('./asistente');
 
@@ -19,7 +19,7 @@ const miDetectorIntenciones = new DetectorDeIntenciones(Intencion);
 // 2. Motor de IA y Decorador
 const motorIAReal = new ModeloIA();
 console.log("MAIN: Envolviendo Motor de IA con Decorador de Logging...");
-const motorIAConLogging = new LoggingMotorIADecorator(motorIAReal);
+const motorIAConLogging = new ModeloIAExtendido(motorIAReal);
 
 // 3. Fábrica de Estrategias
 console.log("MAIN: Creando Fábrica de Estrategias...");
