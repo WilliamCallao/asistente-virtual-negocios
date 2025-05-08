@@ -1,12 +1,10 @@
 // main.js
 
 const { Mensaje, Intencion } = require('./modelos');
-const {
-    EmisorWhatsapp,
-    ModeloIA,
-    Negocio,
-    DetectorDeIntenciones
-} = require('./componentes');
+const EmisorWhatsapp = require('./EmisorWhatsapp');
+const ModeloIA = require('./ModeloIA');
+const Negocio = require('./Negocio');
+const DetectorDeIntenciones = require('./DetectorDeIntenciones');
 const { LoggingMotorIADecorator } = require('./decoradores');
 const { EstrategiaFactory } = require('./fabricas');
 const { AsistenteVirtual } = require('./asistente');
