@@ -1,10 +1,3 @@
-class Mensaje {
-    constructor(remitente, texto) {
-        this.remitente = remitente;
-        this.texto = texto;
-    }
-}
-
 const Intencion = {
     PRODUCTO: "PRODUCTO",
     RESERVA: "RESERVA",
@@ -13,6 +6,5 @@ const Intencion = {
 };
 
 module.exports = {
-    Mensaje,
     Intencion
 };

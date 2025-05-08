@@ -1,6 +1,7 @@
 // main.js
 
-const { Mensaje, Intencion } = require('./modelos');
+const { Mensaje } = require('./Mensaje');
+const { Intencion } = require('./Intencion');
 const EmisorWhatsapp = require('./EmisorWhatsapp');
 const ModeloIA = require('./ModeloIA');
 const Negocio = require('./Negocio');
@@ -47,8 +48,8 @@ const asistente = new AsistenteVirtual(
 
 console.log("\n--- MAIN: Iniciando simulación de mensajes ---");
 asistente.atenderNuevoMensaje(new Mensaje("UsuarioAlfa", "Hola, ¿qué tal?"));
-// asistente.atenderNuevoMensaje(new Mensaje("UsuarioBeta", "Quiero saber el precio del producto X"));
-// asistente.atenderNuevoMensaje(new Mensaje("UsuarioGamma", "Necesito hacer una reserva para mañana"));
-// asistente.atenderNuevoMensaje(new Mensaje("UsuarioDelta", "¿Venden bicicletas?")); // Debería caer en producto
-// asistente.atenderNuevoMensaje(new Mensaje("UsuarioEpsilon", "blablabla")); // Debería caer en no entendido
+asistente.atenderNuevoMensaje(new Mensaje("UsuarioBeta", "Quiero saber el precio del producto X"));
+asistente.atenderNuevoMensaje(new Mensaje("UsuarioGamma", "Necesito hacer una reserva para mañana"));
+asistente.atenderNuevoMensaje(new Mensaje("UsuarioDelta", "¿Venden bicicletas?")); // Debería caer en producto
+asistente.atenderNuevoMensaje(new Mensaje("UsuarioEpsilon", "blablabla")); // Debería caer en no entendido
 console.log("\n--- MAIN: Simulación terminada ---");

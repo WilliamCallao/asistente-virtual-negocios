@@ -1,5 +1,5 @@
 // estrategias.js
-const { Intencion } = require('./modelos');
+const Intencion = require('./Intencion');
 
 class EstrategiaDeProcesamiento {
     constructor(cerebroIA, obtenerInformacionNegocio) {
