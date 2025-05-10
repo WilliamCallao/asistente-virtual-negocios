@@ -1,6 +1,6 @@
 class Whatsapp {
     enviarRespuestaAlUsuario(usuario, texto) {
-        console.log("Enviando repuesta -> " + usuario + ":" + texto);
+        console.log("Enviando repuesta -> " + usuario + " : " + texto);
     }
 }
 

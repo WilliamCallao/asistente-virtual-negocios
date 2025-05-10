@@ -1,6 +1,7 @@
 // Clase base
 class IA {
     generarRespuestaIA(mensaje, contexto) {
+        console.log("Generando respuesta -> IA");
         return "Respuesta con IA";
     }
 }

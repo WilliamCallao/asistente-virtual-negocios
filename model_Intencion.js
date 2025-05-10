@@ -1,7 +1,7 @@
 const Intencion = {
     PRODUCTO: "PRODUCTO",
     RESERVA: "RESERVA",
-    SALUDO: "SALUDO",
+    // SALUDO: "SALUDO",
     DESCONOCIDO: "DESCONOCIDO"
 };
 

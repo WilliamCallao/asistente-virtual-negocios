@@ -8,10 +8,7 @@ class DetectorDeIntenciones {
             intencion = "PRODUCTO";
         } else if (texto2.includes("reserva")) {
             intencion = "RESERVA";
-        } else if (texto2.includes("hola")) {
-            intencion = "SALUDO";
-        }
-
+        } 
         console.log("Intención detectada -> " + intencion);
         return intencion;
     }
