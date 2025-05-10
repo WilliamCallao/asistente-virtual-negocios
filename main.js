@@ -7,7 +7,7 @@ const ModeloIA = require('./ModeloIA');
 const Negocio = require('./Negocio');
 const DetectorDeIntenciones = require('./DetectorDeIntenciones');
 const { ModeloIAExtendido } = require('./ModeloIAExtendido');
-const { EstrategiaFactory } = require('./fabricas');
+const crearEstrategia = require('./estrategiaFactory');
 const { AsistenteVirtual } = require('./asistente');
 
 console.log("--- MAIN: Iniciando configuración del Asistente Virtual ---");
@@ -22,20 +22,15 @@ const motorIAReal = new ModeloIA();
 console.log("MAIN: Envolviendo Motor de IA con Decorador de Logging...");
 const motorIAConLogging = new ModeloIAExtendido(motorIAReal);
 
-// 3. Fábrica de Estrategias
-console.log("MAIN: Creando Fábrica de Estrategias...");
-const estrategiaFactory = new EstrategiaFactory(motorIAConLogging, miobtenerInformacionNegocio);
 
 // 4. Mapa de Estrategias (usando la fábrica)
 console.log("MAIN: Creando mapa de estrategias específicas...");
 const mapaEstrategias = {
-    [Intencion.PRODUCTO]: estrategiaFactory.crearEstrategia(Intencion.PRODUCTO),
-    [Intencion.RESERVA]: estrategiaFactory.crearEstrategia(Intencion.RESERVA),
+    [Intencion.PRODUCTO]: crearEstrategia(Intencion.PRODUCTO, motorIAConLogging, miobtenerInformacionNegocio),
+    [Intencion.RESERVA]: crearEstrategia(Intencion.RESERVA, motorIAConLogging, miobtenerInformacionNegocio),
 };
+const estrategiaPorDefecto = crearEstrategia(Intencion.DESCONOCIDO, motorIAConLogging, miobtenerInformacionNegocio);
 
-// 5. Estrategia por defecto (también de la fábrica)
-console.log("MAIN: Obteniendo estrategia por defecto...");
-const estrategiaPorDefecto = estrategiaFactory.crearEstrategia(Intencion.DESCONOCIDO); // O cualquier clave que lleve a la por defecto
 
 // 6. Asistente Virtual
 console.log("MAIN: Creando Asistente Virtual...");

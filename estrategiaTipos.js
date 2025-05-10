@@ -1,6 +1,6 @@
 const { Intencion }  = require('./Intencion');
 
-// Clase base
+// Clase Base
 
 class EstrategiaDeProcesamiento {
     constructor(modeloIA, negocio) {
