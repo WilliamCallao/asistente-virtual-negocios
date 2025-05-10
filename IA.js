@@ -1,4 +1,12 @@
-class ModeloIAExtendido {
+// Clase base
+class IA {
+    generarRespuestaIA(mensaje, contexto) {
+        return "Respuesta con IA";
+    }
+}
+
+// Decorador
+class IAConRegistro {
     constructor(original) {
         this.original = original;
     }
@@ -11,5 +19,6 @@ class ModeloIAExtendido {
 }
 
 module.exports = {
-    ModeloIAExtendido
+    IA,
+    IAConRegistro
 };

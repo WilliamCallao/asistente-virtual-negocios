@@ -1,7 +1,7 @@
-class EmisorWhatsapp {
+class Whatsapp {
     enviarRespuestaAlUsuario(usuario, texto) {
         console.log("Enviando repuesta -> " + usuario + ":" + texto);
     }
 }
 
-module.exports = EmisorWhatsapp;
+module.exports = Whatsapp;

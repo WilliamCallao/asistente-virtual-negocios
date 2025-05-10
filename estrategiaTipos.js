@@ -1,4 +1,4 @@
-const { Intencion }  = require('./Intencion');
+const { Intencion }  = require('./model_Intencion');
 
 // Clase Base
 

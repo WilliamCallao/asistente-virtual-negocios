@@ -1,26 +1,25 @@
 // main.js
 
-const { Mensaje } = require('./Mensaje');
-const { Intencion } = require('./Intencion');
-const EmisorWhatsapp = require('./EmisorWhatsapp');
-const ModeloIA = require('./ModeloIA');
-const Negocio = require('./Negocio');
-const DetectorDeIntenciones = require('./DetectorDeIntenciones');
-const { ModeloIAExtendido } = require('./ModeloIAExtendido');
+const { Mensaje } = require('./model_mensaje');
+const { Intencion } = require('./model_Intencion');
+const Whatsapp = require('./Whatsapp');
+const Negocio = require('./model_negocio');
+const DetectorDeIntenciones = require('./IA_Clasificador');
+const { IA, IAConRegistro } = require('./IA');
 const crearEstrategia = require('./estrategiaFactory');
 const { AsistenteVirtual } = require('./asistente');
 
 console.log("--- MAIN: Iniciando configuración del Asistente Virtual ---");
 
 // 1. Componentes base
-const miEnviadorConsola = new EmisorWhatsapp();
+const miEnviadorConsola = new Whatsapp();
 const miobtenerInformacionNegocio = new Negocio();
 const miDetectorIntenciones = new DetectorDeIntenciones(Intencion);
 
 // 2. Motor de IA y Decorador
-const motorIAReal = new ModeloIA();
+const motorIAReal = new IA();
 console.log("MAIN: Envolviendo Motor de IA con Decorador de Logging...");
-const motorIAConLogging = new ModeloIAExtendido(motorIAReal);
+const motorIAConLogging = new IAConRegistro(motorIAReal);
 
 
 // 4. Mapa de Estrategias (usando la fábrica)
