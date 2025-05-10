@@ -12,3 +12,4 @@ class Negocio {
 }
 
 module.exports = Negocio;
+

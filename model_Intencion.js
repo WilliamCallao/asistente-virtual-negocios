@@ -8,3 +8,4 @@ const Intencion = {
 module.exports = {
     Intencion
 };
+

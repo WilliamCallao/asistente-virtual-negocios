@@ -11,12 +11,12 @@ const { AsistenteVirtual } = require('./asistente');
 const canalRespuesta = new Whatsapp();
 const negocio = new Negocio();
 const detectorIntenciones = new DetectorDeIntenciones(Intencion);
-const motorIAReal = new IA();
-const ia = new IAConRegistro(motorIAReal);
+const iaSimple = new IA();
+const iaRegistro = new IAConRegistro(iaSimple);
 const mapaEstrategias = {
-    [Intencion.PRODUCTO]: crearEstrategia(Intencion.PRODUCTO, ia, negocio),
-    [Intencion.RESERVA]: crearEstrategia(Intencion.RESERVA, ia, negocio),
-    [Intencion.DESCONOCIDO]: crearEstrategia(Intencion.DESCONOCIDO, ia, negocio),
+    [Intencion.PRODUCTO]: crearEstrategia(Intencion.PRODUCTO, iaRegistro, negocio),
+    [Intencion.RESERVA]: crearEstrategia(Intencion.RESERVA, iaRegistro, negocio),
+    [Intencion.DESCONOCIDO]: crearEstrategia(Intencion.DESCONOCIDO, iaRegistro, negocio),
 };
 
 

@@ -8,3 +8,4 @@ class Mensaje {
 module.exports = {
     Mensaje
 };
+
