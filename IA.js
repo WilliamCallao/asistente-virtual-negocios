@@ -1,4 +1,16 @@
-// Clase base
+// PATRÓN DECORATOR
+//
+// Este archivo muestra la aplicación del patrón Decorator para añadir
+// funcionalidades adicionales a un objeto `IA` de forma dinámica.
+// - `IA`: Actúa como el "Componente" base, definiendo la interfaz
+//   (`generarRespuestaIA`) que el decorador también implementará.
+// - `IAConRegistro`: Es el "Decorador Concreto". Envuelve un objeto `IA` 
+//    y añade una nueva responsabilidad (registrar la respuesta) antes o 
+//    después de delegar la llamada al objeto envuelto.
+// El objetivo es extender la funcionalidad de los objetos `IA` sin modificar
+// su clase original y permitiendo que estas extensiones sean opcionales y
+// combinables.
+
 class IA {
     generarRespuestaIA(mensaje, contexto) {
         console.log("Generando respuesta -> IA");
@@ -6,7 +18,6 @@ class IA {
     }
 }
 
-// Decorador
 class IAConRegistro {
     constructor(original) {
         this.original = original;

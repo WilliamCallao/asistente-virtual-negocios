@@ -1,6 +1,13 @@
-const { Intencion }  = require('./model_Intencion');
+// PATRÓN STRATEGY
+//
+// Este archivo define las diferentes "estrategias" para procesar mensajes.
+// - `EstrategiaDeProcesamiento`: Es la interfaz base para cada estrategia.
+// - `EstrategiaConsultaProducto`, `EstrategiaReserva`, `EstrategiaPorDefecto`: Son las
+//    implementaciones concretas, cada una con una lógica de procesamiento específica.
+// Esto permite que el `AsistenteVirtual` elija y utilice la estrategia adecuada
+// sin conocer los detalles de su implementación, facilitando la extensibilidad.
 
-// Clase Base
+const { Intencion }  = require('./model_Intencion');
 
 class EstrategiaDeProcesamiento {
     constructor(modeloIA, negocio) {
@@ -11,8 +18,6 @@ class EstrategiaDeProcesamiento {
         return "...";
     }
 }
-
-// Clases Especificas
 
 class EstrategiaConsultaProducto extends EstrategiaDeProcesamiento {
     procesar(mensaje) {
