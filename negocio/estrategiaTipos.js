@@ -7,7 +7,7 @@
 // Esto permite que el `AsistenteVirtual` elija y utilice la estrategia adecuada
 // sin conocer los detalles de su implementación, facilitando la extensibilidad.
 
-const { Intencion }  = require('./model_Intencion');
+const { Intencion } = require('./models/model_Intencion');
 
 class EstrategiaDeProcesamiento {
     constructor(modeloIA, negocio) {

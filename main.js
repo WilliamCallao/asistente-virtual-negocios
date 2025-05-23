@@ -1,12 +1,11 @@
-const { Mensaje } = require('./model_mensaje');
-const { Intencion } = require('./model_Intencion');
-const Whatsapp = require('./Whatsapp');
-const Negocio = require('./model_negocio');
-const DetectorDeIntenciones = require('./IA_Clasificador');
-const { IA, IAConRegistro } = require('./IA');
-const crearEstrategia = require('./estrategiaFactory');
-const { AsistenteVirtual } = require('./asistente');
-
+const { Mensaje } = require('./negocio/models/model_mensaje');
+const { Intencion } = require('./negocio/models/model_Intencion');
+const Whatsapp = require('./presentacion/Whatsapp');
+const Negocio = require('./negocio/models/model_negocio');
+const DetectorDeIntenciones = require('./negocio/IA_Clasificador');
+const { IA, IAConRegistro } = require('./negocio/IA');
+const crearEstrategia = require('./negocio/estrategiaFactory');
+const { AsistenteVirtual } = require('./negocio/asistente');
 
 const canalRespuesta = new Whatsapp();
 const negocio = new Negocio();
